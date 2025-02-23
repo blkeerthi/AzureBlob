@@ -3,23 +3,29 @@ package com.example.azureblob.Azureblob.Artifact;
 import com.example.azureblob.Azureblob.Client.ImageStorageClient;
 import com.example.azureblob.Azureblob.Exception.Custom.Result.Result;
 import com.example.azureblob.Azureblob.Exception.Custom.Result.StatusCode;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 @RestController
-@RequestMapping("/artifacts")
+@RequestMapping("/api/v1/artifacts")
 public class ArtifactController {
 
     private final ImageStorageClient imageStorageClient;
 
-    public ArtifactController(ImageStorageClient imageStorageClient) {
+    private final ArtifactService artifactService;
+
+    public ArtifactController(ImageStorageClient imageStorageClient, ArtifactService artifactService) {
         this.imageStorageClient = imageStorageClient;
+        this.artifactService = artifactService;
+    }
+
+    @GetMapping("/{artifactId}")
+    public Result findArifactById(@PathVariable String artifactId) {
+        Artifact byId = this.artifactService.findById(artifactId);
+        return new Result(true,StatusCode.SUCCESS,"Keerthi",byId);
     }
 
     @PostMapping("/images")
